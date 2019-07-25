@@ -13,7 +13,10 @@ Among other things, it brings free cfw to more regions*, and removes the possibi
 ~~~ Directions ~~~
 
 Directions are provided in the Release archive.
-An online service will also be provided very shortly. It's still being tested.
+
+Optionally, here's an online service for non-windows users (also has Taiwan support):
+https://jenkins.nelthorya.net/job/DSIHaxInjector%20v2/
+
 Waiting for Bannerbomb3 to be merged into homebrew guides is probably the best strategy for most users right now, though.
 
 ~~~ Hbmenu? ~~~
