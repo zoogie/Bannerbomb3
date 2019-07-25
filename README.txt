@@ -33,7 +33,7 @@ Basically put, this overflows the banner title strings in DSiWare exports (TADs)
 You do need the movable.sed to encrypt a payload TAD, but that's easy enough to do nowadays. Movable.sed bruteforcing now only takes about a minute and free online services can do it for you. Over 350,000 people have done it so it can't be that hard :p
 
 More exploit details on 3dbrew:
-<link forthcoming>
+https://www.3dbrew.org/wiki/3DS_Userland_Flaws#System_applications
 ... and in the comments inside rop_payload/rop_payload.s, of course.
 
 ~~~ Q&A ~~~
