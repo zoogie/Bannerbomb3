@@ -58,7 +58,7 @@ typedef struct banner_t
 	u16 crc16s[4];
 	u8 pad[0x16];
 	u8 icon[0x220]; //bitmap 0x200 + palette 0x20
-	u8 bannerstrings[8][0x100];
+	u8 bannerstrings[16][0x100];
 	u8 dontcare[0x4000-0x1240]; //wide open space for payloads etc., although data past banner + 0x23C0 usually isn't copied to memory.
 } __attribute__((packed)) banner_t;
 
