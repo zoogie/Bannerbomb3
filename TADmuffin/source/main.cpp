@@ -80,7 +80,7 @@ void fixcrc16(u16 *checksum, u8 *message, u32 len){
 	printf("good\n");
 }
 
-void rebuildTad(char *filename, const char *dname) {
+void rebuildTad(char *filename, const char *dname, char *altbannername) {
 	u8 *dsiware, *movable, *altbanner;
 	u32 header_size=0xF0, footer_size=0x4E0, movable_size, banner_size=0x4000, altbanner_size;
 	//u8 banner_hash[0x20]={0}, header_hash[0x20] = {0};
@@ -130,9 +130,14 @@ void rebuildTad(char *filename, const char *dname) {
 	memcpy(footer, &Footer.banner_hash, sizeof(footer_t));
 	
 	FILE *f = fopen("altbanner.bin", "rb");
-	if(f){
-		fclose(f);
-		altbanner=readAllBytes("altbanner.bin", altbanner_size);
+	if(f || strlen(altbannername)>0){
+		if(f){
+			strncpy(altbannername, "altbanner.bin", 255);
+			fclose(f);
+		}
+		
+		printf("Using altbanner.bin ...\n");
+		altbanner=readAllBytes(altbannername, altbanner_size);
 		if(altbanner_size != 0x4000) error("altbanner is not 0x4000 bytes","altbanner.bin",true); 
 		banner=altbanner;
 	}
@@ -175,6 +180,7 @@ void usage(){
 	printf("1. 'TADmuffin movable.sed' at command prompt\n");
 	printf("2.  Drag and Drop movable.sed on TADmuffin\n");
 	printf("3.  Run TADmuffin with movable.sed beside it\n");
+	printf("Optional:  altbanner.bin beside TADmuffin or as second arg will substitute the built in hax banner\n");
 }
 
 int main(int argc, char* argv[]) {
@@ -182,10 +188,15 @@ int main(int argc, char* argv[]) {
 	//u32 tidlow=0x484E4441; //DLP   (or 0x42383841 INT)
 	const char *dname1="Usa_Europe_Japan_Korea";
 	//const char *dname2="China_Taiwan";
+	char altbannername[256]={0};
 	
 	if(argc>3){
 		usage();
 		return 1;
+	}
+	
+	if(argc==3){
+		memcpy(altbannername, argv[2], 255);
 	}
 	
 	mkdir(dname1);
@@ -194,7 +205,7 @@ int main(int argc, char* argv[]) {
 	printf("|TADmuffin by zoogie|\n");
 	printf("|________v1.0_______|\n");
 	
-	rebuildTad(argv[1], dname1);  
+	rebuildTad(argv[1], dname1, altbannername);  
 	printf("\nJob completed!\nPress Enter to close\n");
 	getchar();
 	

@@ -64,7 +64,7 @@ CFLAGS	+=	$(INCLUDE)
 CXXFLAGS	:= $(CFLAGS)
 
 ASFLAGS	:=	-g
-LDFLAGS	=	-g
+LDFLAGS	=	-g -static-libgcc -static-libstdc++
 
 #---------------------------------------------------------------------------------
 # any extra libraries we wish to link with the project (order is important)
