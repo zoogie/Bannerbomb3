@@ -1,0 +1,295 @@
+Archive member included to satisfy reference by file (symbol)
+
+C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                              build/main.o (getThreadCommandBuffer)
+C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)
+                              build/main.o (memset)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+RAMRO            0x0000000000101000 0x0000000000001000 xr
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+.text           0x0000000000101000      0x600
+ build/crt0.o(.init)
+ .init          0x0000000000101000       0x40 build/crt0.o
+                0x0000000000101000                _start
+                0x000000000010103c                _init
+ *(.text)
+ .text          0x0000000000101040        0x0 build/crt0.o
+ .text          0x0000000000101040      0x4a4 build/main.o
+                0x0000000000101040                _strlen
+                0x000000000010105c                _strcpy
+                0x000000000010107c                _strappend
+                0x000000000010109c                _srv_RegisterClient
+                0x00000000001010d0                _initSrv
+                0x0000000000101100                _srv_getServiceHandle
+                0x0000000000101188                _GSPGPU_ImportDisplayCaptureInfo
+                0x00000000001011e0                GSP_GetTopFBADR
+                0x000000000010121c                GSP_FlushDCache
+                0x0000000000101228                hex2str
+                0x0000000000101258                renderString
+                0x0000000000101284                centerString
+                0x00000000001012c4                drawHex
+                0x00000000001012f8                clearScreen
+                0x0000000000101324                drawTitleScreen
+                0x0000000000101378                NS_RebootSystem
+                0x00000000001013a4                _GSPGPU_SetBufferSwap
+                0x0000000000101420                _AM_ExportTwlBackup
+ .text          0x00000000001014e4        0x0 build/font.o
+ .text          0x00000000001014e4      0x114 build/text.o
+                0x00000000001014e4                drawCharacter
+                0x000000000010156c                drawString
+ *fill*         0x00000000001015f8        0x8 
+ .text          0x0000000000101600        0x0 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+ .text          0x0000000000101600        0x0 C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)
+
+.glue_7         0x0000000000101600        0x0
+ .glue_7        0x0000000000101600        0x0 linker stubs
+
+.glue_7t        0x0000000000101600        0x0
+ .glue_7t       0x0000000000101600        0x0 linker stubs
+
+.vfp11_veneer   0x0000000000101600        0x0
+ .vfp11_veneer  0x0000000000101600        0x0 linker stubs
+
+.v4_bx          0x0000000000101600        0x0
+ .v4_bx         0x0000000000101600        0x0 linker stubs
+
+.iplt           0x0000000000101600        0x0
+ .iplt          0x0000000000101600        0x0 build/crt0.o
+
+.text.startup   0x0000000000101600      0x300
+ .text.startup  0x0000000000101600      0x300 build/main.o
+                0x0000000000101600                main
+
+.text.getThreadCommandBuffer
+                0x0000000000101900        0xc
+ .text.getThreadCommandBuffer
+                0x0000000000101900        0xc C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101900                getThreadCommandBuffer
+
+.text.svc_controlMemory
+                0x000000000010190c       0x20
+ .text.svc_controlMemory
+                0x000000000010190c       0x20 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x000000000010190c                svc_controlMemory
+
+.text.svc_queryMemory
+                0x000000000010192c       0x30
+ .text.svc_queryMemory
+                0x000000000010192c       0x30 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x000000000010192c                svc_queryMemory
+
+.text.svc_exitProcess
+                0x000000000010195c        0x8
+ .text.svc_exitProcess
+                0x000000000010195c        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x000000000010195c                svc_exitProcess
+
+.text.svc_createThread
+                0x0000000000101964       0x20
+ .text.svc_createThread
+                0x0000000000101964       0x20 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101964                svc_createThread
+
+.text.svc_exitThread
+                0x0000000000101984        0x8
+ .text.svc_exitThread
+                0x0000000000101984        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101984                svc_exitThread
+
+.text.svc_sleepThread
+                0x000000000010198c        0x8
+ .text.svc_sleepThread
+                0x000000000010198c        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x000000000010198c                svc_sleepThread
+
+.text.svc_createMutex
+                0x0000000000101994       0x14
+ .text.svc_createMutex
+                0x0000000000101994       0x14 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101994                svc_createMutex
+
+.text.svc_releaseMutex
+                0x00000000001019a8        0x8
+ .text.svc_releaseMutex
+                0x00000000001019a8        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x00000000001019a8                svc_releaseMutex
+
+.text.svc_releaseSemaphore
+                0x00000000001019b0       0x14
+ .text.svc_releaseSemaphore
+                0x00000000001019b0       0x14 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x00000000001019b0                svc_releaseSemaphore
+
+.text.svc_createEvent
+                0x00000000001019c4       0x14
+ .text.svc_createEvent
+                0x00000000001019c4       0x14 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x00000000001019c4                svc_createEvent
+
+.text.svc_signalEvent
+                0x00000000001019d8        0x8
+ .text.svc_signalEvent
+                0x00000000001019d8        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x00000000001019d8                svc_signalEvent
+
+.text.svc_clearEvent
+                0x00000000001019e0        0x8
+ .text.svc_clearEvent
+                0x00000000001019e0        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x00000000001019e0                svc_clearEvent
+
+.text.svc_createMemoryBlock
+                0x00000000001019e8       0x18
+ .text.svc_createMemoryBlock
+                0x00000000001019e8       0x18 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x00000000001019e8                svc_createMemoryBlock
+
+.text.svc_mapMemoryBlock
+                0x0000000000101a00        0x8
+ .text.svc_mapMemoryBlock
+                0x0000000000101a00        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a00                svc_mapMemoryBlock
+
+.text.svc_unmapMemoryBlock
+                0x0000000000101a08        0x8
+ .text.svc_unmapMemoryBlock
+                0x0000000000101a08        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a08                svc_unmapMemoryBlock
+
+.text.svc_arbitrateAddress
+                0x0000000000101a10        0x8
+ .text.svc_arbitrateAddress
+                0x0000000000101a10        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a10                svc_arbitrateAddress
+
+.text.svc_closeHandle
+                0x0000000000101a18        0x8
+ .text.svc_closeHandle
+                0x0000000000101a18        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a18                svc_closeHandle
+
+.text.svc_waitSynchronization1
+                0x0000000000101a20        0x8
+ .text.svc_waitSynchronization1
+                0x0000000000101a20        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a20                svc_waitSynchronization1
+
+.text.svc_waitSynchronizationN
+                0x0000000000101a28       0x20
+ .text.svc_waitSynchronizationN
+                0x0000000000101a28       0x20 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a28                svc_waitSynchronizationN
+
+.text.svc_getSystemTick
+                0x0000000000101a48        0x8
+ .text.svc_getSystemTick
+                0x0000000000101a48        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a48                svc_getSystemTick
+
+.text.svc_getSystemInfo
+                0x0000000000101a50       0x1c
+ .text.svc_getSystemInfo
+                0x0000000000101a50       0x1c C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a50                svc_getSystemInfo
+
+.text.svc_getProcessInfo
+                0x0000000000101a6c       0x1c
+ .text.svc_getProcessInfo
+                0x0000000000101a6c       0x1c C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a6c                svc_getProcessInfo
+
+.text.svc_connectToPort
+                0x0000000000101a88       0x14
+ .text.svc_connectToPort
+                0x0000000000101a88       0x14 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a88                svc_connectToPort
+
+.text.svc_sendSyncRequest
+                0x0000000000101a9c        0x8
+ .text.svc_sendSyncRequest
+                0x0000000000101a9c        0x8 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101a9c                svc_sendSyncRequest
+
+.text.svc_getProcessId
+                0x0000000000101aa4       0x14
+ .text.svc_getProcessId
+                0x0000000000101aa4       0x14 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+                0x0000000000101aa4                svc_getProcessId
+
+.text.memset    0x0000000000101ab8      0x118
+ .text.memset   0x0000000000101ab8      0x118 C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)
+                0x0000000000101ab8                memset
+
+.rodata         0x0000000000101bd0      0x3e8
+ *(.rodata)
+ .rodata        0x0000000000101bd0       0x10 build/main.o
+                0x0000000000101bd0                hexTable
+ .rodata        0x0000000000101be0      0x2f4 build/font.o
+                0x0000000000101be0                font_bin
+ *(.roda)
+ *(.rodata.*)
+ .rodata.str1.1
+                0x0000000000101ed4       0xe2 build/main.o
+ *all.rodata*(*)
+ *(.gnu.linkonce.r*)
+                0x0000000000101fb8                . = ALIGN (0x4)
+ *fill*         0x0000000000101fb6        0x2 
+LOAD build/main.o
+LOAD build/font.o
+LOAD build/text.o
+LOAD C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a
+LOAD C:/devkitPro/devkitARM/arm-none-eabi/lib\libm.a
+LOAD C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a
+LOAD C:/devkitPro/devkitARM/arm-none-eabi/lib\libg.a
+OUTPUT(cn_secondary_payload.elf elf32-littlearm)
+
+.rel.dyn        0x0000000000101bd0        0x0 load address 0x0000000000101fb8
+ .rel.iplt      0x0000000000101bd0        0x0 build/crt0.o
+
+.data           0x0000000000101fb8        0x0
+ .data          0x0000000000101fb8        0x0 build/crt0.o
+ .data          0x0000000000101fb8        0x0 build/main.o
+ .data          0x0000000000101fb8        0x0 build/font.o
+ .data          0x0000000000101fb8        0x0 build/text.o
+ .data          0x0000000000101fb8        0x0 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+ .data          0x0000000000101fb8        0x0 C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)
+
+.igot.plt       0x0000000000101fb8        0x0
+ .igot.plt      0x0000000000101fb8        0x0 build/crt0.o
+
+.bss            0x0000000000101fb8        0x0
+ .bss           0x0000000000101fb8        0x0 build/crt0.o
+ .bss           0x0000000000101fb8        0x0 build/main.o
+ .bss           0x0000000000101fb8        0x0 build/font.o
+ .bss           0x0000000000101fb8        0x0 build/text.o
+ .bss           0x0000000000101fb8        0x0 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+ .bss           0x0000000000101fb8        0x0 C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)
+
+.ARM.attributes
+                0x0000000000000000       0x27
+ .ARM.attributes
+                0x0000000000000000       0x19 build/crt0.o
+ .ARM.attributes
+                0x0000000000000019       0x2b build/main.o
+ .ARM.attributes
+                0x0000000000000044       0x2b build/font.o
+ .ARM.attributes
+                0x000000000000006f       0x2b build/text.o
+ .ARM.attributes
+                0x000000000000009a       0x19 C:/Users/Snake-DellPC/Desktop/GITHUB/Bannerbomb3/code_payload/otherapp_template/libctru/lib\libctru.a(svc.o)
+ .ARM.attributes
+                0x00000000000000b3       0x2a C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)
+
+.comment        0x0000000000000000       0x22
+ .comment       0x0000000000000000       0x22 build/main.o
+                                         0x23 (size before relaxing)
+ .comment       0x0000000000000022       0x23 build/font.o
+ .comment       0x0000000000000022       0x23 build/text.o
+ .comment       0x0000000000000022       0x23 C:/devkitPro/devkitARM/arm-none-eabi/lib\libc.a(lib_a-memset.o)

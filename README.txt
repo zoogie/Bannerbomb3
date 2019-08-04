@@ -3,7 +3,7 @@ Bannerbomb3
 ~~~ Intro ~~~
 
 This is a POC for a new System Settings userland exploit. 
-It uses ROP execution to dump DS Internet from System Settings using a custom crafted dsiware export.
+It uses ROP and ARM execution to dump DS Internet (and possibly others) from System Settings using a custom crafted dsiware export.
 This is useful primarily as an enhancement for "Fredminer" variant of seedminer to obtain free cfw on 3ds.
 
 Among other things, it brings free cfw to more regions*, and removes the possibility of Nintendo pulling certain games like Steel Diver from the eshop to thwart homebrew efforts.
@@ -17,7 +17,8 @@ Directions are provided in the Release archive.
 Optionally, here's an online service for non-windows users (also has Taiwan support):
 https://jenkins.nelthorya.net/job/DSIHaxInjector%20v2/
 
-Waiting for Bannerbomb3 to be merged into homebrew guides is probably the best strategy for most users right now, though.
+Using bannerbom3 in conjunction with decent homebrew guides is probably the best strategy for most users, though.
+https://3ds.hacks.guide/seedminer (like this one)
 
 ~~~ Hbmenu? ~~~
 
@@ -56,3 +57,5 @@ A: Yes. Feels good man.
 - All the people on #3dsdev, reading my backlog (Ctrl-F "pivot") provided a wealth of good info on the art of stack pivoting.
 - Nintendo Homebrew Discord for maintaining online tools/guides and helping all the seed/frog/fredminer users. I hope this sploit makes your jobs a little easier.
 - Jhynjhiruu for testing
+- Smea for regionFour, which I base the arm part of code_payload on.
+- Wintermute for ROPinstaller, for the gspwn codeload ROP (Bootstrap.S) that I used in code_payload.
