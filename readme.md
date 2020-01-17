@@ -17,7 +17,7 @@ Directions are provided in the Release archive.
 Optionally, here's an online service for non-windows users (also has Taiwan support):
 https://jenkins.nelthorya.net/job/DSIHaxInjector%20v2/
 
-Using bannerbom3 in conjunction with decent homebrew guides is probably the best strategy for most users, though.
+Using bannerbomb3 in conjunction with decent homebrew guides is probably the best strategy for most users, though.
 https://3ds.hacks.guide/seedminer (like this one)
 
 ## Hbmenu? 
