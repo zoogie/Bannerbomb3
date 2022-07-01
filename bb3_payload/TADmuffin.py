@@ -358,7 +358,7 @@ fix_crc16(DIR+"banner.bin", 0x20, 0xA20, 0x6, MODBUS)
 fix_crc16(DIR+"banner.bin", 0x1240, 0x1180, 0x8, MODBUS)
 
 print("Rebuilding export...")
-get_keyy("movable_blue.sed")
+get_keyy("movable.sed")
 fix_hashes_and_sizes()
 #sign_footer() #don't need this for bannerhax - exploit is triggered before footer ecdsa is verified
 rebuild_tad()
