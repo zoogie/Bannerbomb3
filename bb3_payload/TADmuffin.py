@@ -11,9 +11,9 @@ ROP=b""
 PAYLOAD=b""
 offset=0
 
-DEST=0x00682000
+DEST=0x006AA000 # + 80200 = 72A200
 ROP=DEST
-FILE=0x00681000
+FILE=DEST-0x1000
 PAYSIZE=0x00080200
 GARBAGE=0xdeadbeef
 
@@ -161,6 +161,8 @@ tad_sections=[b""]*14
 def get_keyy(n):
 	global keyy
 	realseed=0
+	if len(sys.argv) == 2:
+		n=sys.argv[1]
 	with open(n,"rb") as f:
 		msedlen=len(f.read())
 		if(msedlen != 0x140 and msedlen != 0x120):
