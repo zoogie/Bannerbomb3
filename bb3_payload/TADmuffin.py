@@ -1,4 +1,4 @@
-from __future__ import print_function
+# python3
 from Cryptodome.Hash import CMAC
 from Cryptodome.Cipher import AES
 import os,sys,random,hashlib,struct
@@ -143,24 +143,11 @@ cmac_keyx=0xB529221CDDB5DB5A1BF26EFF2041E875
 
 tidstr="%08X" % tidlow
 assert(len(tidstr) == 8)
-
 DIR=tidstr+"/"
-BM=0x20		 #block metadata size https://www.3dbrew.org/wiki/DSiWare_Exports (a bunch of info in this script is sourced here)
-BANNER=0x0
-BANNER_SIZE=0x4000
-HEADER=BANNER+BANNER_SIZE+BM
-HEADER_SIZE=0xF0
-FOOTER=HEADER+HEADER_SIZE+BM
-FOOTER_SIZE=0x4E0
-TMD=FOOTER+FOOTER_SIZE+BM
-content_sizelist=[0]*11
-content_namelist=["tmd","srl.nds","2.bin","3.bin","4.bin","5.bin","6.bin","7.bin","8.bin","public.sav","banner.sav"]
-
 tad_sections=[b""]*14
 
 def get_keyy(n):
 	global keyy
-	realseed=0
 	if len(sys.argv) == 2:
 		n=sys.argv[1]
 	with open(n,"rb") as f:
@@ -170,25 +157,11 @@ def get_keyy(n):
 			sys.exit(1)
 		f.seek(0x110)
 		temp=f.read(0x10)
+		print("ID0: %08x%08x%08x%08x" % struct.unpack("<IIII", hashlib.sha256(temp).digest()[:16]))
 		keyy=int(hexlify(temp), 16)
 
 def int16bytes(n):
 	return struct.pack(">QQ",(n & 0xffffffffffffffff0000000000000000) >> 64, n & 0xffffffffffffffff)
-	
-def int2bytes(n):
-	s=bytearray(4)
-	for i in range(4):
-		s[i]=n & 0xFF
-		n=n>>8
-	return s
-	
-def endian(n, size):
-	new=0
-	for i in range(size):
-		new <<= 8
-		new |= (n & 0xFF)
-		n >>= 8
-	return new
 		
 def add_128(a, b):
 	return (a+b) & F128
@@ -205,30 +178,10 @@ def normalkey(x,y):	 	#3ds aes engine - curtesy of rei's pastebin google doc, cu
 	n=add_128(n,C)	  	#https://pastebin.com/ucqXGq6E
 	n=rol_128(n,87)	 	#https://smealum.github.io/3ds/32c3/#/113
 	return n
-	
-def decrypt(message, key, iv):
-	cipher = AES.new(key, AES.MODE_CBC, iv )
-	return cipher.decrypt(message)
 
 def encrypt(message, key, iv):
 	cipher = AES.new(key, AES.MODE_CBC, iv )
 	return cipher.encrypt(message)
-
-def check_keyy(keyy_offset):
-	global keyy
-	tempy=endian(keyy,16)
-	tempy=tempy+(keyy_offset<<64)
-	tempy=endian(tempy,16)
-	iv=tad[HEADER+HEADER_SIZE+0x10:HEADER+HEADER_SIZE+0x20]
-	key=normalkey(keyx, tempy)
-	result=decrypt(tad[HEADER:HEADER+HEADER_SIZE],int16bytes(key),iv)
-	if(b"\x33\x46\x44\x54" not in result[:4]):
-		print("wrong -- keyy offset: %d" % (keyy_offset))
-		return 1
-	keyy=tempy
-	print("correct! -- keyy offset: %d" % (keyy_offset))
-	return 0
-	#print("%08X  %08X  %s" % (data_offset, size, filename))
 
 def get_content_block(buff):
 	global cmac_keyx
@@ -237,44 +190,10 @@ def get_content_block(buff):
 	cipher = CMAC.new(key, ciphermod=AES)
 	result = cipher.update(hash)
 	return result.digest() + b'\x00'*16
-
-def fix_hashes_and_sizes():
-	sizes=[0]*11
-	hashes=[b""]*13
-	footer_namelist=["banner.bin","header.bin"]+content_namelist
-	for i in range(11):
-		if(os.path.exists(DIR+content_namelist[i])):
-			sizes[i] = os.path.getsize(DIR+content_namelist[i])
-		else:
-			sizes[i] = 0
-	for i in range(13):
-		if(not os.path.exists(DIR+footer_namelist[i])):
-			hashes[i] = b"\x00"*0x20
-			
-	with open(DIR+"header.bin","rb+") as f:
-		offset=0x38
-		f.seek(offset)
-		f.write(struct.pack("<I",tidlow))
-		offset=0x48
-		for i in range(11):
-			f.seek(offset)
-			f.write(int2bytes(sizes[i]))
-			offset+=4
-		f.seek(0)
-		#hashes[1] = hashlib.sha256(f.read()).digest() #we need to recalulate header hash in case there's a size change in any section. sneaky bug.
-		print("header.bin fixed")
-	
-	with open(DIR+"footer.bin","rb+") as f:
-		offset=0
-		for i in range(13):
-			f.seek(offset)
-			f.write(hashes[i])
-			offset+=0x20
-		print("footer.bin fixed")
 		
 def rebuild_tad():
 	global keyy
-	full_namelist=["banner.bin","header.bin","footer.bin"]+content_namelist
+	full_namelist=["banner.bin","header.bin"]
 	section=""
 	content_block=""
 	key=normalkey(keyx,keyy)
@@ -287,17 +206,15 @@ def rebuild_tad():
 			tad_sections[i]=encrypt(section, int16bytes(key), content_block[0x10:])+content_block
 	with open("%08X.bin" % tidlow,"wb") as f:
 		out=b''.join(tad_sections)
-		f.write(out)
+		f.write(out+b"\x00"*0x500) #0x500 bytes are don't care padding for footer
 	print("Rebuilt to %08X.bin" % tidlow)
 	print("Done.")
 
-STANDARD=0x0000
-MODBUS=0xFFFF
+MODBUS=0xFFFF # STANDARD=0x0000
 def fix_crc16(path, offset, size, crc_offset, type):# CRC-16-Modbus Algorithm
 	with open(path,"rb+") as f:
 		f.seek(offset)
-		data=f.read(size)
-		
+		data=f.read(size)	
 		poly=0xA001
 		crc = type
 		for b in data:
@@ -309,26 +226,17 @@ def fix_crc16(path, offset, size, crc_offset, type):# CRC-16-Modbus Algorithm
 					crc >>= 1
 				cur_byte >>= 1
 		crc16=crc & 0xFFFF
-
-		print("Patching offset %08X..." % crc_offset)
+		print("Patching crc_offset:%04X | msg_offset:%04X | msg_size:%04X..." % (crc_offset, offset, size))
 		f.seek(crc_offset)
 		f.write(struct.pack("<H",crc16))
 
-def inject_bin(src, dest, offset, ispad): #the payload is constructed from the rop chain at the top of this script
-	buff=PAYLOAD
-	#with open("data/rop_payload.bin","rb") as f:
-		#buff=f.read()
-	srclen=len(buff)
-	padlen=0x1000-srclen
-	if ispad:
-		buff+=b"\x99"*padlen
+def inject_bin(dest, offset): #the payload is constructed from the rop chain at the top of this script
 	with open(dest,"rb+") as f:
 		f.seek(offset)
-		f.write(buff*8)
+		f.write(PAYLOAD*8)
 
 print("|TADmuffin by zoogie|")
-print("|_______v1.0________|")
-print("Note: This is a simplified TADpole used only for Bannerbomb3")
+print("|_______v1.0________|  Note: This is a simplified TADpole used only for Bannerbomb3")
 abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname)
@@ -342,17 +250,14 @@ except:
 	print("/%s already exists" % tidstr)
 banner_bin=b"\x03\x01"+b"\x00"*(0x4000-2)
 header_bin=b"3DFT"+struct.pack(">I",4)+(b"\x42"*0x20)+(b"\x99"*0x10)+struct.pack("<Q",0x0004800500000000+tidlow)+(b"\x00"*0xB0)
-footer_bin=b"\x00"*0x4E0
 
 with open(DIR+"banner.bin","wb") as f:
 	f.write(banner_bin)
 with open(DIR+"header.bin","wb") as f:
 	f.write(header_bin)
-with open(DIR+"footer.bin","wb") as f:
-	f.write(footer_bin)
 	
-print("Injecting payload...")
-inject_bin("rop_payload.bin",DIR+"banner.bin",0x240,False)
+print("Injecting payload to banner...")
+inject_bin(DIR+"banner.bin",0x240)
 print("Fixing crc16s...")
 fix_crc16(DIR+"banner.bin", 0x20, 0x820, 0x2, MODBUS)
 fix_crc16(DIR+"banner.bin", 0x20, 0x920, 0x4, MODBUS)
@@ -361,6 +266,5 @@ fix_crc16(DIR+"banner.bin", 0x1240, 0x1180, 0x8, MODBUS)
 
 print("Rebuilding export...")
 get_keyy("movable.sed")
-fix_hashes_and_sizes()
 #sign_footer() #don't need this for bannerhax - exploit is triggered before footer ecdsa is verified
 rebuild_tad()

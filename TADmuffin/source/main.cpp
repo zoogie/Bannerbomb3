@@ -187,7 +187,7 @@ int main(int argc, char* argv[]) {
 	//char dname[512]={0};
 	//u32 tidlow=0x484E4441; //DLP   (or 0x42383841 INT)
 	const char *dname1="Usa_Europe_Japan_Korea";
-	//const char *dname2="China_Taiwan";
+	//const char *dname2="Taiwan";
 	char altbannername[256]={0};
 	
 	if(argc>3){
@@ -199,11 +199,11 @@ int main(int argc, char* argv[]) {
 		memcpy(altbannername, argv[2], 255);
 	}
 	
-	mkdir(dname1);
+	mkdir(dname1, 0777);
 	//mkdir(dname2);
 	
 	printf("|TADmuffin by zoogie|\n");
-	printf("|________v1.0_______|\n");
+	printf("|________v1.0w______|\n");
 	
 	rebuildTad(argv[1], dname1, altbannername);  
 	printf("\nJob completed!\nPress Enter to close\n");
