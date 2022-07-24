@@ -1,0 +1,61 @@
+#define ROP_POPPC 0x001186a8
+#define POP_R1PC 0x001c53ac
+#define POP_R3PC 0x0011b43c
+#define POP_R2R6PC 0x001ac868
+#define POP_R4LR_BXR1 0x00118348
+#define POP_R4R8LR_BXR2 0x0011d7f8
+#define POP_R4R5R6PC 0x0010d0d8
+#define POP_R4FPPC 0x0010d450
+#define POP_R4R8PC 0x0010edc8
+
+#define ROP_STR_R1TOR0 0x00118318
+#define ROP_STR_R0TOR1 0x001106b8
+#define ROP_LDR_R0FROMR0 0x00182ef8
+#define ROP_ADDR0_TO_R1 0x00110590
+
+#define MEMCPY 0x001c1570
+
+#define svcSleepThread 0x001aee24
+
+#define GSPGPU_FlushDataCache 0x00133d80
+#define GSPGPU_SERVHANDLEADR 0x0027fad4
+
+#define IFile_Read 0x001b3d6c
+#define IFile_Write 0x001b3f64
+
+#define ROP_MOV_R3_R6_BLX_ADDRR5 0x00124540
+#define ROP_MOV_R1_0 0x00191a94
+#define ROP_MOV_R3_4_JUNKTOR0 0x0011d934
+#define ROP_STR_R12R0 0x00117aec
+#define GSPGPU_WriteHWRegs 0x001340bc
+#define MAGENTA_ADDR 0x0028f650
+#define AM_TwlExport 0x00153eec
+#define POP_R2PC 0x001cbc04+1
+#define ROP_POPR3_ADDSPR3_POPPC 0x00143d5c
+#define POP_R0PC 0x00143e88
+#define ROP_LDRR1R1_STRR1R0 0x001a01a4
+#define ROP_CMPR0R1_ALT0 0x001da730
+#define MEMSET32_OTHER 0x001c59a0
+#define svcControlMemory 0x001c4208
+#define ROP_INITOBJARRAY 0x001b6851
+#define svcCreateThread 0x0010b6d8
+#define svcConnectToPort 0x001bf218
+#define svcGetProcessId 0x00129c58
+#define SRV_GETSERVICEHANDLE 0x001c4290
+#define CFGIPC_SecureInfoGetRegion 0x00116d7c
+#define ROP_COND_THROWFATALERR 0x001c4768
+#define GXLOW_CMD4 0x0013c2d0
+#define GSP_SHAREDMEM_SETUPFRAMEBUF 0x0012c238
+#define GSPTHREAD_OBJECTADDR 0x0027c580
+#define FS_MountSdmc 0x0018f4f4
+#define IFile_Open 0x001b8728
+#define IFile_Close 0x001b86e4
+#define IFile_Seek 0x001a4b5c
+
+
+//constants
+#define GARBAGE 0xADDEADDE
+#define TID_H	0x00048005
+#define INT	0x42383841
+#define WBUFF	0x00681000
+#define HWREGS_ADDR 0x00202A04 
