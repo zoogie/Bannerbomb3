@@ -16,6 +16,9 @@
 #define HID_PAD (*(vu32*)0x1000001C)
 #define GSPGPU_FlushDataCache 0x0013e46c
 #define GSPGPU_SERVHANDLEADR 0x002993c4
+#define HAXX 0x58584148
+#define slot1 (u8*)0x006AA000+0xC000
+#define AM_TwlExport 0x00156d28
 u32 VRAM=(u32)0x31000000;
 u8 *workbuf;
 //Handle *cfgHandle= (Handle*)0x00600000;
@@ -224,7 +227,7 @@ void clearScreen(u8 shade)
 void drawTitleScreen(char* str)
 {
 	clearScreen(0x00);
-	centerString("BB3 + *hax by zoogie",0);
+	centerString("BB3 multihax by zoogie",0);
 	centerString("https://3ds.hacks.guide/",1*8);
 	centerString("Help: https://discord.gg/C29hYvh",2*8);
 	renderString(str, 0, 7*8);
@@ -324,6 +327,98 @@ Result CFGU_SecureInfoGetRegion(u8* region, Handle cfgHandle)
 	*region = (u8)cmdbuf[2] & 0xFF;
 
 	return (Result)cmdbuf[1];
+}
+
+Result check_slots(){
+	u8 *zerobuf=(u8*)(workbuf+0xC00);
+	memset(zerobuf, 0, 0x500);
+	int x=30*8;
+	int y=4*8;
+	renderString("Slot Status:      ", x, y);
+	for(int i=0; i<3; i++){
+		y+=1*8;
+		drawHex(i+1, x+8, y);
+		 _CFG_GetConfigInfoBlk4(0xC00, 0x80000+i, workbuf, cfgHandle);
+		 renderString("          ", x, y);
+		 svc_sleepThread(100*1000*1000);
+		if(*(u32*)(workbuf+0x420) == HAXX){
+			renderString("  Haxx    ", x, y);
+		}
+		else if(memcmp(zerobuf, workbuf, 0x500)){
+			renderString("  User    ", x, y);
+		}
+		else{
+			renderString("  None    ", x, y);
+		}
+	}
+	
+	return 0;
+}
+
+Result restore_slots(){
+	for(int i=0; i<3; i++){
+		memset(workbuf, 0, 0xC00);
+		_CFG_GetConfigInfoBlk4(0xC00, 0x80000+i, workbuf, cfgHandle);
+		if(*(u32*)(workbuf+0x420) == HAXX){
+			memcpy(workbuf, workbuf+0x500, 0x500); //restore backup slot to wifi slot
+			memset(workbuf+0x500, 0, 0x500);       //clear slot backup to zeros
+			_CFG_SetConfigInfoBlk4(0xC00, 0x80000+i, workbuf, cfgHandle); //commit workbuf to slot
+		}
+		else{
+			//pass
+		}
+	}
+	 _CFG_UpdateConfigSavegame(cfgHandle);
+	check_slots();
+	
+	return 0;
+}
+
+Result inject_slots(){
+	for(int i=0; i<3; i++){
+		memset(workbuf, 0, 0xC00);
+		_CFG_GetConfigInfoBlk4(0xC00, 0x80000+i, workbuf, cfgHandle);
+		if(*(u32*)(workbuf+0x420) == HAXX){
+			//pass
+		}
+		else{
+			memcpy(workbuf+0x500, workbuf, 0x500); //backup user slot to slot+0x500
+			memcpy(workbuf, slot1, 0x500);         //write slot1 to workbuf
+			_CFG_SetConfigInfoBlk4(0xC00, 0x80000+i, workbuf, cfgHandle); //commit workbuf to slot
+		}
+	}
+	 _CFG_UpdateConfigSavegame(cfgHandle);
+	 check_slots();
+	 
+	 return 0;
+}
+
+Result clear_slots(){
+	int count=0;
+	while(1){
+		if(HID_PAD == CLEAR){
+			count++;
+			if(count > 5*60) break;  //if combo held for 5 seconds, proceed.
+		}
+		else{
+			return 0;
+		}
+		svc_sleepThread(17*1000*1000);
+	}
+	
+	Result (* const delete_slot)(u32) = (void *)0x001F86B0;  //this is amazing. works perfectly, and even deletes the annoying nvram backup.
+	
+	delete_slot(0);
+	delete_slot(1);
+	delete_slot(2);
+	 
+	check_slots();
+
+	renderString("All slots cleared!", 0, 16*8);
+	svc_sleepThread(2000*1000*1000);
+	renderString("                  ", 0, 16*8);
+
+	return 0;
 }
 
 Result menuhax67(u16 version){
@@ -455,9 +550,12 @@ Result uninstall(){
 
 Result render(int cursor){
 	int y=12*8;
-	renderString("  Inject *hax      ", 0, y);
-	renderString("  Uninstall *hax   ", 0, y+8);
-	renderString("  Exit             ", 0, y+16);
+	renderString("  Install      *HAX       ", 0, y);
+	renderString("    Uninstall  *HAX       ", 0, y+8);
+	renderString("  Install      unSAFE_MODE", 0, y+16);
+	renderString("    Uninstall  unSAFE_MODE", 0, y+24);
+	renderString("  Dump DSiWare (fredtool)", 0, y+32);
+	renderString("  Exit                   ", 0, y+40);
 	renderString("->", 0, y+(cursor*8));
 	return 0;
 }
@@ -493,9 +591,46 @@ Result _AM_GetTitleInfo(u32 mediatype, u32 titleCount, u64 *titleIds, AM_TitleEn
 	return 0;
 }
 
+Result _AM_ExportTwlBackup(u64 titleID, u8 operation, u32 *workbuf, u32 workbuf_size, char *path, Handle amHandle)
+{
+	Result ret = 0;
+	u32 *cmdbuf = getThreadCommandBuffer();
+	u16 *filepath=(u16*)(workbuf-0x100);
+
+	u32 len=_strlen(path); //"sdmc:/42383841.bin"
+	if(len > 255) len=255;
+	
+	for(int i=0; i < len ; i++){
+		filepath[i]=*(path+i) & 0xFF;
+	}
+	filepath[len]=0;
+	len=(len+1)*2;
+
+	cmdbuf[0] = 0x001B0144;
+	cmdbuf[1] = titleID & 0xffffffff;
+	cmdbuf[2] = (u32)(titleID >> 32);
+	cmdbuf[3] = 38;
+	cmdbuf[4] = workbuf_size;
+	cmdbuf[5] = operation;
+	cmdbuf[6] = (38 << 4) | 0x8 | 2;
+	cmdbuf[7] = (u32)filepath;
+	cmdbuf[8] = (workbuf_size << 4) | 0x8 | 4;
+	cmdbuf[9] = (u32)workbuf;
+
+	if((ret = svc_sendSyncRequest(amHandle))) return ret;
+	
+	return (Result)cmdbuf[1];
+}
+/*
+Result export(u32 tidlow, u32 tidhigh, char *export_path, u8 *wbuff){
+	Result (* _export)(u32,u32,char*,u8*) = (void *)AM_TwlExport;  //this is amazing. works perfectly, and even deletes the annoying nvram backup.
+	return _export(tidlow, tidhigh, export_path, wbuff);
+}
+*/
+
 int main(int loaderparam, char** argv)
 {
-	workbuf=(u8*)0x00690000;
+	workbuf=(u8*)0x00620000;
 	//u8 *slot1=(u8*)(0x00682000+0x1F000);
 	//Handle nptr;
 	//Handle cfgHandle;  using defines to avoid globals that require DATA and BSS section
@@ -521,6 +656,10 @@ int main(int loaderparam, char** argv)
 		0x000400300000A902LL, //KOR
 		0x000400300000B102LL  //TWN
 	};
+	
+	u64 dsint=0x0004800542383841LL;
+	u64 dsdlp=0x00048005484E4441LL;
+	u64 krdlp=0x00048005484E444BLL;
 	
 	Handle* gspHandle=(Handle*)GSPGPU_SERVHANDLEADR;
 	u32 *linear_buffer = (u32*)VRAM;
@@ -569,14 +708,15 @@ int main(int loaderparam, char** argv)
 	if(!res) res = _AM_GetTitleInfo(0, 1, &menus[region], &t, amHandle);
 	
 	render(cursor);
+	check_slots();
 	
 	while(1){
 		svc_sleepThread(17*1000*1000);
 		if     (HID_PAD & PAD_UP)   cursor--;
 		else if(HID_PAD & PAD_DOWN) cursor++;
 		
-		if      (cursor < 0) cursor=2;
-		else if (cursor > 2) cursor=0;
+		if      (cursor < 0) cursor=5;
+		else if (cursor > 5) cursor=0;
 		
 		if(cursor ^ oldcurs){
 			render(cursor); 
@@ -593,30 +733,82 @@ int main(int loaderparam, char** argv)
 		case 0:
 		if(!iscfw){
 			menuhax67(t.version);
-			renderString("*hax INSTALLED!!", 0, 16*8);   //try to be super obvious what's happened 
+			renderString("*HAX INSTALLED!!", 0, 20*8);   //try to be super obvious what's happened 
 			svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
-			renderString("Rebooting...   ", 0, 18*8);
+			renderString("Rebooting...   ", 0, 22*8);
 			svc_sleepThread(1000*1000*1000);
 			NS_RebootSystem(nsHandle, 0x160000);            //this is a power down
 			while(1) svc_sleepThread(100*1000*1000); 
 		}
 		else{
-			renderString("No need to rehack!", 0, 16*8);
+			renderString("No need to rehack!", 0, 20*8);
 			svc_sleepThread(2000*1000*1000);	
 			break;
 		}
 	
 		case 1:
 		uninstall();
-		renderString("Uninstalled!!  ", 0, 16*8);   //try to be super obvious what's happened 
+		renderString("Uninstalled!!  ", 0, 20*8);   //try to be super obvious what's happened 
 		svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
 		//confirm(17*8);
-		renderString("Rebooting now...       ", 0, 18*8);
+		renderString("Rebooting now...       ", 0, 22*8);
 		svc_sleepThread(2000*1000*1000);
 		break;
 		
 		case 2:
-		renderString("Rebooting now...       ", 0, 16*8);
+		if(!iscfw){
+			inject_slots();
+			renderString("unSAFE_MODE INSTALLED!!", 0, 20*8);   //try to be super obvious what's happened 
+			svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
+			//confirm(17*8);
+			renderString("Shutting down now...   ", 0, 22*8);
+			svc_sleepThread(2000*1000*1000);
+			NS_RebootSystem(nsHandle, 0xE0000);                 //this is a power down
+			while(1) svc_sleepThread(100*1000*1000); 
+		}
+		else{
+			renderString("No need to rehack!", 0, 20*8);
+			svc_sleepThread(2000*1000*1000);	
+			break;
+		}
+		
+		case 3:
+		restore_slots();
+		renderString("Wifi slots restored!!  ", 0, 20*8);   //try to be super obvious what's happened 
+		svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
+		//confirm(17*8);
+		renderString("Rebooting now...       ", 0, 22*8);
+		svc_sleepThread(2000*1000*1000);
+		break;
+		
+		case 4:
+		if(!iscfw){
+			y=180;
+			
+			res = _AM_ExportTwlBackup(dsint, 1, (u32*)low_framebuffer, 0x00020000, "sdmc:/42383841.bin", amHandle);
+			drawHex(res, 10, y+=10); if(!res) renderString("OK - sd:/42383841.bin", 10, y+=10);
+			svc_sleepThread(2000*1000*1000); if(!res) goto reboot;
+			
+			res = _AM_ExportTwlBackup(dsdlp, 1, (u32*)low_framebuffer, 0x00020000, "sdmc:/484E4441.bin", amHandle);
+			drawHex(res, 10, y+=10); if(!res) renderString("OK - sd:/484E4441.bin", 10, y+=10);
+			svc_sleepThread(2000*1000*1000); if(!res) goto reboot;
+			
+			res = _AM_ExportTwlBackup(krdlp, 1, (u32*)low_framebuffer, 0x00020000, "sdmc:/484E444B.bin", amHandle);	
+			drawHex(res, 10, y+=10); if(!res) renderString("OK - sd:/484E444B.bin", 10, y+=10);
+			svc_sleepThread(2000*1000*1000);	
+		}
+		else{
+			renderString("No need to rehack!", 0, 20*8);
+			svc_sleepThread(2000*1000*1000);	
+			break;
+		}
+		
+		reboot:
+		renderString("Rebooting now...", 10, y+=10);
+		break;
+		
+		case 5:
+		renderString("Rebooting now...       ", 0, 20*8);
 		svc_sleepThread(2000*1000*1000);
 		break;
 		

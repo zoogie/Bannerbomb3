@@ -12,7 +12,7 @@
 
 #define ROPKIT_BINPAYLOAD_PATH "sd:/bb3.bin"
 #define ROPKIT_BINPAYLOAD_FILEOFFSET 0x8000  //put bb3 installer inside bb3.bin
-#define ROPKIT_BINLOAD_SIZE 0x2000
+#define ROPKIT_BINLOAD_SIZE 0x3000
 
 #define ROPKIT_MOUNTSD        
 #define ROPKIT_TMPDATA 0x0FFFc000

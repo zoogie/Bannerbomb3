@@ -14,4 +14,5 @@ def inject(ffrom, fto, offset):
 
 padto("bb3.bin", 0x80200)
 inject("otherapp_template/otherapp_template.bin","bb3.bin",0x8000)
+inject("slot1.bin","bb3.bin",0xC000)
 #padto("bb3.bin", 0x80200)
