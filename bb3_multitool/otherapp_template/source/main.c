@@ -550,11 +550,11 @@ Result uninstall(){
 
 Result render(int cursor){
 	int y=12*8;
-	renderString("  Install      *HAX       ", 0, y);
-	renderString("    Uninstall  *HAX       ", 0, y+8);
-	renderString("  Install      unSAFE_MODE", 0, y+16);
-	renderString("    Uninstall  unSAFE_MODE", 0, y+24);
-	renderString("  Dump DSiWare (fredtool)", 0, y+32);
+	renderString("  Install      unSAFE_MODE", 0, y);
+	renderString("    Uninstall  unSAFE_MODE", 0, y+8);
+	renderString("  Dump DSiWare (fredtool)", 0, y+16);
+	renderString("  Install      *HAX       ", 0, y+24);
+	renderString("    Uninstall  *HAX       ", 0, y+32);
 	renderString("  Exit                   ", 0, y+40);
 	renderString("->", 0, y+(cursor*8));
 	return 0;
@@ -730,32 +730,8 @@ int main(int loaderparam, char** argv)
 	
 	switch(cursor){
 		
-		case 0:
-		if(!iscfw){
-			menuhax67(t.version);
-			renderString("*HAX INSTALLED!!", 0, 20*8);   //try to be super obvious what's happened 
-			svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
-			renderString("Rebooting...   ", 0, 22*8);
-			svc_sleepThread(1000*1000*1000);
-			NS_RebootSystem(nsHandle, 0x160000);            //this is a power down
-			while(1) svc_sleepThread(100*1000*1000); 
-		}
-		else{
-			renderString("No need to rehack!", 0, 20*8);
-			svc_sleepThread(2000*1000*1000);	
-			break;
-		}
-	
-		case 1:
-		uninstall();
-		renderString("Uninstalled!!  ", 0, 20*8);   //try to be super obvious what's happened 
-		svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
-		//confirm(17*8);
-		renderString("Rebooting now...       ", 0, 22*8);
-		svc_sleepThread(2000*1000*1000);
-		break;
 		
-		case 2:
+		case 0:
 		if(!iscfw){
 			inject_slots();
 			renderString("unSAFE_MODE INSTALLED!!", 0, 20*8);   //try to be super obvious what's happened 
@@ -772,7 +748,7 @@ int main(int loaderparam, char** argv)
 			break;
 		}
 		
-		case 3:
+		case 1:
 		restore_slots();
 		renderString("Wifi slots restored!!  ", 0, 20*8);   //try to be super obvious what's happened 
 		svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
@@ -781,7 +757,7 @@ int main(int loaderparam, char** argv)
 		svc_sleepThread(2000*1000*1000);
 		break;
 		
-		case 4:
+		case 2:
 		if(!iscfw){
 			y=180;
 			
@@ -807,6 +783,30 @@ int main(int loaderparam, char** argv)
 		renderString("Rebooting now...", 10, y+=10);
 		break;
 		
+		case 3:
+		if(!iscfw){
+			menuhax67(t.version);
+			renderString("*HAX INSTALLED!!", 0, 20*8);   //try to be super obvious what's happened 
+			svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
+			renderString("Rebooting...   ", 0, 22*8);
+			svc_sleepThread(1000*1000*1000);
+			NS_RebootSystem(nsHandle, 0x160000);            //this is a power down
+			while(1) svc_sleepThread(100*1000*1000); 
+		}
+		else{
+			renderString("No need to rehack!", 0, 20*8);
+			svc_sleepThread(2000*1000*1000);	
+			break;
+		}
+	
+		case 4:
+		uninstall();
+		renderString("Uninstalled!!  ", 0, 20*8);   //try to be super obvious what's happened 
+		svc_sleepThread(500*1000*1000);		    //so hopefully no unnecessary trips to discord due to confusion
+		//confirm(17*8);
+		renderString("Rebooting now...       ", 0, 22*8);
+		svc_sleepThread(2000*1000*1000);
+		break;
 		case 5:
 		renderString("Rebooting now...       ", 0, 20*8);
 		svc_sleepThread(2000*1000*1000);
