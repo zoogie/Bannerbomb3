@@ -1,4 +1,4 @@
-# Bannerbomb3
+# Bannerbomb3 (patched on firmware 11.17.0-50 for US/EU/JP)
 
 ## Intro
 
